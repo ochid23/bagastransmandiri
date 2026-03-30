@@ -1,0 +1,182 @@
+// Initialize default row
+document.addEventListener('DOMContentLoaded', () => {
+    addRow();
+});
+
+function addRow() {
+    const tbody = document.getElementById('itemsBody');
+    const rowCount = tbody.children.length + 1;
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+        <td><input type="text" value="${rowCount}" class="row-no" readonly style="width: 40px;"></td>
+        <td><input type="text" class="row-tgl" placeholder="dd/mm/yy"></td>
+        <td><input type="text" class="row-mobil" placeholder="..."></td>
+        <td><input type="text" class="row-nopol" placeholder="..."></td>
+        <td><input type="text" class="row-driver" placeholder="..."></td>
+        <td><input type="text" class="row-tujuan" placeholder="..."></td>
+        <td><input type="text" class="row-mulai" placeholder="..."></td>
+        <td><input type="text" class="row-selesai" placeholder="..."></td>
+        <td><input type="text" class="row-jamot" placeholder="..."></td>
+        <td><input type="text" class="row-nominalot" placeholder="..."></td>
+        <td><input type="number" class="row-biaya" placeholder="0" onchange="calculateTotal()"></td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); calculateTotal();">
+                <i class="ri-delete-bin-line"></i>
+            </button>
+        </td>
+    `;
+    tbody.appendChild(tr);
+}
+
+function calculateTotal() {
+    const biayaInputs = document.querySelectorAll('.row-biaya');
+    let total = 0;
+    biayaInputs.forEach(input => {
+        const val = parseFloat(input.value);
+        if(!isNaN(val)) total += val;
+    });
+    
+    // Format as Rupiah (simple format)
+    const formatted = new Intl.NumberFormat('id-ID').format(total);
+    document.getElementById('totalCost').value = formatted;
+}
+
+function generatePreview() {
+    // Basic Details
+    document.getElementById('outInvoiceNo').innerText = document.getElementById('invoiceNo').value || '.......';
+    document.getElementById('outCustomerName').innerText = document.getElementById('customerName').value || '.......';
+    document.getElementById('outCustomerPhone').innerText = document.getElementById('customerPhone').value || '.......';
+    document.getElementById('outCustomerType').innerText = document.getElementById('customerType').value;
+    document.getElementById('outCustomerAddress').innerText = document.getElementById('customerAddress').value || '.......';
+    
+    // Status & Total
+    document.getElementById('outTotalCost').innerText = document.getElementById('totalCost').value || '0';
+    document.getElementById('outStatus').innerText = document.getElementById('paymentStatus').value;
+
+    // Table rows
+    const tbodyIn = document.getElementById('itemsBody');
+    const tbodyOut = document.getElementById('outItemsBody');
+    tbodyOut.innerHTML = ''; // Clear existing
+    
+    // Add minimum empty rows if needed to make the invoice look full
+    const minRows = 5;
+    let actualRows = tbodyIn.children.length;
+
+    for (let i = 0; i < Math.max(actualRows, minRows); i++) {
+        const trOut = document.createElement('tr');
+        
+        if (i < actualRows) {
+            const rowIn = tbodyIn.children[i];
+            const getVal = (cls) => rowIn.querySelector(cls).value || '-';
+            
+            // Format Biaya to Rp string if exists
+            let rawBiaya = rowIn.querySelector('.row-biaya').value;
+            let strBiaya = rawBiaya ? 'Rp ' + new Intl.NumberFormat('id-ID').format(rawBiaya) : 'Rp -';
+
+            trOut.innerHTML = `
+                <td>${getVal('.row-no')}</td>
+                <td>${getVal('.row-tgl')}</td>
+                <td>${getVal('.row-mobil')}</td>
+                <td>${getVal('.row-nopol')}</td>
+                <td>${getVal('.row-driver')}</td>
+                <td>${getVal('.row-tujuan')}</td>
+                <td>${getVal('.row-mulai')}</td>
+                <td>${getVal('.row-selesai')}</td>
+                <td>${getVal('.row-jamot')}</td>
+                <td>${getVal('.row-nominalot')}</td>
+                <td>${strBiaya}</td>
+            `;
+        } else {
+            // Empty rows filler
+            trOut.innerHTML = `
+                <td></td><td></td><td></td><td></td><td></td><td></td>
+                <td></td><td></td><td></td><td></td><td></td>
+            `;
+        }
+        tbodyOut.appendChild(trOut);
+    }
+    
+    // Show Preview Section
+    document.getElementById('previewSection').style.display = 'flex';
+}
+
+function closePreview() {
+    document.getElementById('previewSection').style.display = 'none';
+}
+
+// ============== EXPORT FUNCTIONS ==============
+
+async function getCanvas() {
+    const element = document.getElementById('invoiceTemplate');
+    return await html2canvas(element, { scale: 2, useCORS: true });
+}
+
+async function exportToImage() {
+    try {
+        const canvas = await getCanvas();
+        const link = document.createElement('a');
+        link.download = `Invoice_BTM_${document.getElementById('customerName').value || 'Client'}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    } catch (err) {
+        alert("Gagal menyimpan gambar: " + err.message);
+    }
+}
+
+async function exportToPDF() {
+    try {
+        const canvas = await getCanvas();
+        const imgData = canvas.toDataURL('image/png');
+        
+        const { jsPDF } = window.jspdf;
+        // A4 dimension: 210 x 297 mm
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save(`Invoice_BTM_${document.getElementById('customerName').value || 'Client'}.pdf`);
+    } catch (err) {
+        alert("Gagal menyimpan PDF: " + err.message);
+    }
+}
+
+async function shareToWhatsApp() {
+    // Generate preview first to ensure latest data
+    generatePreview();
+    
+    try {
+        const canvas = await getCanvas();
+        canvas.toBlob(async (blob) => {
+            const file = new File([blob], `Invoice_BTM.png`, { type: "image/png" });
+            
+            // Check if native share exists and supports files (mostly Mobile)
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: 'Invoice BTM',
+                    text: 'Berikut adalah Invoice pesanan Anda.',
+                    files: [file]
+                });
+            } else {
+                // Fallback for Desktop: Save file, alert user, and open WA Web with text message
+                alert("Perangkat ini belum mendukung fitur bagi gambar otomatis ke WhatsApp via Web App.\n\nGambar akan diunduh, silakan kirim secara manual melalui WhatsApp.");
+                
+                // Trigger download
+                const link = document.createElement('a');
+                link.download = `Invoice_BTM.png`;
+                link.href = URL.createObjectURL(blob);
+                link.click();
+                
+                // Open WA With text
+                const textMsg = encodeURIComponent(`Halo ${document.getElementById('customerName').value},\n\nBerikut total tagihan penyewaan Anda di Bagas Trans Mandiri sejumlah Rp ${document.getElementById('totalCost').value}.\nMohon cek gambar invoice terlampir.\n\nTerima kasih.`);
+                window.open(`https://api.whatsapp.com/send?text=${textMsg}`, '_blank');
+            }
+        }, 'image/png');
+        
+    } catch (err) {
+        alert("Gagal memproses berbagi ke WhatsApp.");
+        console.error(err);
+    }
+}
