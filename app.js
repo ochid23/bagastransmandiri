@@ -52,6 +52,9 @@ function calculateTotal() {
 
 function generatePreview() {
     // Basic Details
+    const docType = document.getElementById('documentType').value || 'Invoice';
+    document.getElementById('outDocTitle').innerText = docType.toUpperCase();
+    
     document.getElementById('outInvoiceNo').innerText = document.getElementById('invoiceNo').value || '.......';
     document.getElementById('outCustomerName').innerText = document.getElementById('customerName').value || '.......';
     document.getElementById('outCustomerPhone').innerText = document.getElementById('customerPhone').value || '.......';
@@ -133,7 +136,8 @@ async function exportToImage() {
     try {
         const canvas = await getCanvas();
         const link = document.createElement('a');
-        link.download = `Invoice_BTM_${document.getElementById('customerName').value || 'Client'}.png`;
+        const docType = document.getElementById('documentType').value || 'Invoice';
+        link.download = `${docType}_BTM_${document.getElementById('customerName').value || 'Client'}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
     } catch (err) {
@@ -153,8 +157,9 @@ async function exportToPDF() {
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
         
+        const docType = document.getElementById('documentType').value || 'Invoice';
         pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-        pdf.save(`Invoice_BTM_${document.getElementById('customerName').value || 'Client'}.pdf`);
+        pdf.save(`${docType}_BTM_${document.getElementById('customerName').value || 'Client'}.pdf`);
     } catch (err) {
         alert("Gagal menyimpan PDF: " + err.message);
     }
@@ -167,13 +172,14 @@ async function shareToWhatsApp() {
     try {
         const canvas = await getCanvas();
         canvas.toBlob(async (blob) => {
-            const file = new File([blob], `Invoice_BTM.png`, { type: "image/png" });
+            const docType = document.getElementById('documentType').value || 'Invoice';
+            const file = new File([blob], `${docType}_BTM.png`, { type: "image/png" });
             
             // Check if native share exists and supports files (mostly Mobile)
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 await navigator.share({
-                    title: 'Invoice BTM',
-                    text: 'Berikut adalah Invoice pesanan Anda.',
+                    title: `${docType} BTM`,
+                    text: `Berikut adalah ${docType} pesanan Anda.`,
                     files: [file]
                 });
             } else {
@@ -182,12 +188,13 @@ async function shareToWhatsApp() {
                 
                 // Trigger download
                 const link = document.createElement('a');
-                link.download = `Invoice_BTM.png`;
+                link.download = `${docType}_BTM.png`;
                 link.href = URL.createObjectURL(blob);
                 link.click();
                 
                 // Open WA With text
-                const textMsg = encodeURIComponent(`Halo ${document.getElementById('customerName').value},\n\nBerikut total tagihan penyewaan Anda di Bagas Trans Mandiri sejumlah Rp ${document.getElementById('totalCost').value}.\nMohon cek gambar invoice terlampir.\n\nTerima kasih.`);
+                const docTypeLower = docType.toLowerCase();
+                const textMsg = encodeURIComponent(`Halo ${document.getElementById('customerName').value},\n\nBerikut total tagihan penyewaan Anda di Bagas Trans Mandiri sejumlah Rp ${document.getElementById('totalCost').value}.\nMohon cek gambar ${docTypeLower} terlampir.\n\nTerima kasih.`);
                 window.open(`https://api.whatsapp.com/send?text=${textMsg}`, '_blank');
             }
         }, 'image/png');
