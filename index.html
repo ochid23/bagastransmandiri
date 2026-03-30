@@ -97,6 +97,22 @@
                     </div>
                 </div>
 
+                <h2 class="section-title mt-4">Data Penandatangan</h2>
+                <div class="form-grid">
+                    <div class="input-group">
+                        <label>Pihak Rental</label>
+                        <input type="text" id="sigRental" value="Widodo" placeholder="Nama Pihak Rental">
+                    </div>
+                    <div class="input-group">
+                        <label>Saksi (Opsional)</label>
+                        <input type="text" id="sigSaksi" placeholder="Tanda (-) jika tidak ada">
+                    </div>
+                    <div class="input-group">
+                        <label>Penyewa</label>
+                        <input type="text" id="sigPenyewa" placeholder="Otomatis terisi nama penyewa">
+                    </div>
+                </div>
+
                 <div class="action-buttons mt-4">
                     <button type="button" class="btn btn-primary" onclick="generatePreview()">
                         <i class="ri-eye-line"></i> Tampilkan Preview
@@ -219,17 +235,17 @@
                         <div class="sig-box">
                             <p><strong>PIHAK RENTAL</strong></p>
                             <div class="sig-space"></div>
-                            <p><strong>Widodo</strong></p>
+                            <p><strong id="outSigRental">Widodo</strong></p>
                         </div>
                         <div class="sig-box">
                             <p><strong>Saksi</strong></p>
                             <div class="sig-space"></div>
-                            <p><strong>Nama</strong></p>
+                            <p><strong id="outSigSaksi">-</strong></p>
                         </div>
                         <div class="sig-box">
                             <p><strong>Penyewa</strong></p>
                             <div class="sig-space"></div>
-                            <p><strong>Nama</strong></p>
+                            <p><strong id="outSigPenyewa">Nama Penyewa</strong></p>
                         </div>
                     </div>
                 </div>

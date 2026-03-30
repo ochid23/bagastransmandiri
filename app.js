@@ -21,12 +21,20 @@ function addRow() {
         <td><input type="text" class="row-nominalot" placeholder="..."></td>
         <td><input type="number" class="row-biaya" placeholder="0" onchange="calculateTotal()"></td>
         <td>
-            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); calculateTotal();">
+            <button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateRowNumbers(); calculateTotal();">
                 <i class="ri-delete-bin-line"></i>
             </button>
         </td>
     `;
     tbody.appendChild(tr);
+}
+
+function updateRowNumbers() {
+    const rows = document.querySelectorAll('#itemsBody tr');
+    rows.forEach((row, index) => {
+        const noInput = row.querySelector('.row-no');
+        if (noInput) noInput.value = index + 1;
+    });
 }
 
 function calculateTotal() {
@@ -53,6 +61,15 @@ function generatePreview() {
     // Status & Total
     document.getElementById('outTotalCost').innerText = document.getElementById('totalCost').value || '0';
     document.getElementById('outStatus').innerText = document.getElementById('paymentStatus').value;
+
+    // Signatures
+    const sigRental = document.getElementById('sigRental').value || 'Widodo';
+    const sigSaksi = document.getElementById('sigSaksi').value || '-';
+    const sigPenyewa = document.getElementById('sigPenyewa').value || document.getElementById('customerName').value || 'Nama Penyewa';
+    
+    document.getElementById('outSigRental').innerText = sigRental;
+    document.getElementById('outSigSaksi').innerText = sigSaksi;
+    document.getElementById('outSigPenyewa').innerText = sigPenyewa;
 
     // Table rows
     const tbodyIn = document.getElementById('itemsBody');
