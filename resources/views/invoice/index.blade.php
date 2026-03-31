@@ -6,7 +6,7 @@
     <title>BTM Invoice Generator</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
     <!-- Libraries for Export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -27,7 +27,19 @@
         <!-- FORM SECTION -->
         <section class="form-section">
             <div class="glass-panel">
-                <h2 class="section-title">Data Konsumen</h2>
+                <h2 class="section-title">Data Usaha / Perusahaan</h2>
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <label>Alamat Perusahaan</label>
+                        <textarea id="companyAddress" rows="2">Jln. Kampung Ngunut, Jeruklegi No.1 Rt 04. Rw 05, Katongan, Nglipar ,Gunungkidul ,DIY 55852</textarea>
+                    </div>
+                    <div class="input-group">
+                        <label>Nomor Telepon Perusahaan</label>
+                        <input type="text" id="companyPhone" value="081804387025">
+                    </div>
+                </div>
+
+                <h2 class="section-title mt-4">Data Konsumen</h2>
                 <div class="form-grid">
                     <div class="input-group">
                         <label>Jenis Dokumen</label>
@@ -67,6 +79,7 @@
                     <table class="form-table" id="itemsTable">
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>Tgl</th>
                                 <th>Mobil</th>
                                 <th>No. POL</th>
@@ -101,6 +114,18 @@
                     <div class="input-group">
                         <label>Total Biaya Keseluruhan (Rp)</label>
                         <input type="text" id="totalCost" readonly placeholder="Otomatis dihitung...">
+                    </div>
+                </div>
+
+                <h2 class="section-title mt-4">Catatan & Informasi Bank</h2>
+                <div class="form-grid">
+                    <div class="input-group full-width">
+                        <label>Catatan Tambahan (NB)</label>
+                        <textarea id="invoiceNotes" rows="2">NB. Biaya Over Time Dihitung 10% Dari Harga, Harga Belum Termasuk Tol, Parkir Luar Kota</textarea>
+                    </div>
+                    <div class="input-group full-width">
+                        <label>Informasi Rekening Bank</label>
+                        <input type="text" id="bankInfo" value="No.Rekening Bank BRI 6981-01-005150-50-7 (An : Widodo)">
                     </div>
                 </div>
 
@@ -148,7 +173,7 @@
             <div class="invoice-wrapper">
                 <!-- ACTUAL INVOICE TEMPLATE (TO BE EXPORTED) -->
                 <div id="invoiceTemplate" class="invoice-container">
-                    <img src="logo.png" class="watermark-bg" alt="Watermark" onerror="this.style.display='none'">
+                    <img src="{{ asset('images/logo.png') }}" class="watermark-bg" alt="Watermark" onerror="this.style.display='none'">
                     
                     <div class="invoice-header">
                         <div class="header-left">
@@ -156,8 +181,8 @@
                             <p class="brand-subtitle">Tour & Travel</p>
                             <div class="company-info">
                                 <p><strong>Profesional Jasa Transportasi City Tour Yogyakarta</strong></p>
-                                <p>Jln. Kampung Ngunut, Jeruklegi No.1 Rt 04. Rw 05, Katongan, Nglipar ,Gunungkidul ,DIY 55852</p>
-                                <p>Tlp 0821 3443 9272</p>
+                                <p id="outCompanyAddress">Jln. Kampung Ngunut, Jeruklegi No.1 Rt 04. Rw 05, Katongan, Nglipar ,Gunungkidul ,DIY 55852</p>
+                                <p>Tlp <span id="outCompanyPhone">081804387025</span></p>
                             </div>
                         </div>
                         <div class="header-right">
@@ -221,8 +246,8 @@
 
                     <div class="invoice-footer-area">
                         <div class="notes-section">
-                            <p><strong>NB. Biaya Over Time Dihitung 10% Dari Harga, Harga Belum Termasuk Tol, Parkir Luar Kota</strong></p>
-                            <p><strong>No.Rekening Bank BRI 6981-01-005150-50-7 (An : Widodo)</strong></p>
+                            <p><strong id="outInvoiceNotes">NB. Biaya Over Time Dihitung 10% Dari Harga, Harga Belum Termasuk Tol, Parkir Luar Kota</strong></p>
+                            <p><strong id="outBankInfo">No.Rekening Bank BRI 6981-01-005150-50-7 (An : Widodo)</strong></p>
                         </div>
                         <div class="summary-section">
                             <table class="summary-table">
@@ -260,6 +285,6 @@
         </section>
     </main>
 
-    <script src="app.js"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>

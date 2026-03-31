@@ -10,7 +10,7 @@ function addRow() {
     const tr = document.createElement('tr');
     tr.innerHTML = `
         <td><input type="text" value="${rowCount}" class="row-no" readonly style="width: 40px;"></td>
-        <td><input type="text" class="row-tgl" placeholder="dd/mm/yy"></td>
+        <td><input type="date" class="row-tgl"></td>
         <td><input type="text" class="row-mobil" placeholder="..."></td>
         <td><input type="text" class="row-nopol" placeholder="..."></td>
         <td><input type="text" class="row-driver" placeholder="..."></td>
@@ -51,6 +51,10 @@ function calculateTotal() {
 }
 
 function generatePreview() {
+    // Company Details
+    document.getElementById('outCompanyAddress').innerText = document.getElementById('companyAddress').value || 'Jln. Kampung Ngunut, Jeruklegi No.1 Rt 04. Rw 05, Katongan, Nglipar ,Gunungkidul ,DIY 55852';
+    document.getElementById('outCompanyPhone').innerText = document.getElementById('companyPhone').value || '081804387025';
+
     // Basic Details
     const docType = document.getElementById('documentType').value || 'Invoice';
     document.getElementById('outDocTitle').innerText = docType.toUpperCase();
@@ -64,6 +68,10 @@ function generatePreview() {
     // Status & Total
     document.getElementById('outTotalCost').innerText = document.getElementById('totalCost').value || '0';
     document.getElementById('outStatus').innerText = document.getElementById('paymentStatus').value;
+
+    // Notes & Bank
+    document.getElementById('outInvoiceNotes').innerText = document.getElementById('invoiceNotes').value || 'NB. Biaya Over Time Dihitung 10% Dari Harga, Harga Belum Termasuk Tol, Parkir Luar Kota';
+    document.getElementById('outBankInfo').innerText = document.getElementById('bankInfo').value || 'No.Rekening Bank BRI 6981-01-005150-50-7 (An : Widodo)';
 
     // Signatures
     const sigRental = document.getElementById('sigRental').value || 'Widodo';

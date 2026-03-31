@@ -417,7 +417,7 @@ input:focus, select:focus, textarea:focus {
 .brand-subtitle {
     color: #1E88E5 !important;
     font-size: 20px;
-    text-align: right;
+    text-align: left;
     margin: 5px 0 15px 0;
 }
 
