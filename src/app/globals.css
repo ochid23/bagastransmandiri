@@ -176,7 +176,7 @@ input:focus, select:focus, textarea:focus {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    min-width: 900px;
+    min-width: 1200px;
 }
 
 .form-table th {
@@ -389,11 +389,11 @@ input:focus, select:focus, textarea:focus {
 /* Watermark */
 .watermark-bg {
     position: absolute;
-    bottom: -20px;
-    right: -20px;
-    width: 400px;
-    opacity: 0.1;
-    z-index: 1; 
+    bottom: 30px;
+    right: 20px;
+    width: 250px;
+    opacity: 0.12;
+    z-index: 10; 
     pointer-events: none;
 }
 
@@ -408,22 +408,26 @@ input:focus, select:focus, textarea:focus {
 
 .brand-title {
     color: #1E88E5 !important;
-    font-size: 48px;
+    font-size: 40px;
     font-weight: 800;
+    font-style: italic;
     margin: 0;
-    line-height: 1;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
 }
 
 .brand-subtitle {
-    color: #1E88E5 !important;
-    font-size: 20px;
+    color: #5BA3E6 !important;
+    font-size: 18px;
+    font-style: italic;
     text-align: left;
-    margin: 5px 0 15px 0;
+    margin: 2px 0 12px 0;
+    padding-left: 2px;
 }
 
 .company-info {
-    font-size: 13px;
-    line-height: 1.4;
+    font-size: 12px;
+    line-height: 1.5;
 }
 .company-info p { margin: 2px 0; }
 .company-info p strong { font-size: 14px; }
@@ -435,9 +439,10 @@ input:focus, select:focus, textarea:focus {
 
 .invoice-number-box {
     margin-bottom: 10px;
-    font-size: 16px;
+    font-size: 14px;
 }
 .no-label { margin-right: 5px; }
+.no-dots { letter-spacing: 1px; }
 
 .invoice-word {
     font-size: 42px;
@@ -445,6 +450,14 @@ input:focus, select:focus, textarea:focus {
     font-weight: 800;
     margin: 0;
     letter-spacing: 2px;
+}
+
+.dotted-line {
+    display: block;
+    width: 100%;
+    border-bottom: 1px dotted #000;
+    min-height: 1.4em;
+    padding-bottom: 2px;
 }
 
 /* Customer Data */
@@ -456,22 +469,31 @@ input:focus, select:focus, textarea:focus {
 
 .info-table {
     width: 100%;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     border-collapse: collapse;
 }
 
 .info-table td {
-    padding: 5px 0;
+    padding: 6px 0;
     vertical-align: top;
+    white-space: nowrap;
 }
 
-.label-col { width: 230px; }
+.info-table td.val-col,
+.info-table td.val-col-right,
+.info-table td.val-col-full {
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.label-col { width: 200px; }
 .colon { width: 15px; }
-.val-col { width: 350px; border-bottom: 1px dotted #000; }
-.label-col-right { width: 80px; text-align: right; padding-right: 15px !important;}
-.val-col-right { border-bottom: 1px dotted #000; width: auto; }
-.val-col-full { border-bottom: 1px dotted #000; }
+.val-col { width: 250px; }
+.label-col-right { width: 65px; padding-left: 10px !important; }
+.val-col-right { width: auto; }
+.val-col-full { width: auto; }
 
 
 /* Main Details Table */
@@ -502,11 +524,11 @@ input:focus, select:focus, textarea:focus {
     font-weight: bold;
 }
 
-.sub-th { font-size: 11px; }
+.sub-th { font-size: 10px; }
 
-.col-no { width: 35px; }
-.col-tgl { width: 85px; }
-.col-biaya { width: 130px; }
+.col-no { width: 30px; }
+.col-tgl { width: 75px; }
+.col-biaya { width: 90px; }
 
 .main-table tbody tr td {
     height: 35px;
